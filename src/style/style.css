@@ -1,0 +1,42 @@
+.button {
+    -fx-background-color: steelblue;
+    -fx-text-fill: ghostwhite;
+}
+.button:pressed {
+    -fx-background-color: cadetblue;
+}
+.toggle-button {
+    -fx-border-color: white;
+    -fx-font-size: 15px;
+    -fx-background-color: white;
+    -fx-text-fill: lightgray;
+}
+.toggle-button:selected {
+    -fx-background-color: #f2f2f0;
+    -fx-text-fill: black;
+}
+
+.table-view{
+    -fx-background-color: white, -fx-control-inner-background;
+    -fx-background-insets: 0, 1;
+    -fx-padding: 1;
+}
+
+.table-view .scroll-bar:vertical > .increment-button,
+.table-view .scroll-bar:vertical > .decrement-button {
+    -fx-padding: 0.1em 0.1em;
+}
+
+.list-view{
+
+}
+
+.bodybg{
+     -fx-background-image: url('../style/img/download.jpg');
+     -fx-background-size: 100% 100%;
+}
+
+.signUpbg{
+     -fx-background-image: url('../style/img/signUp.jpg');
+     -fx-background-size: 100% 100%;
+}
