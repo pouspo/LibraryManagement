@@ -19,6 +19,7 @@ import models.AdminUser;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AdminPage implements Initializable {
@@ -55,6 +56,12 @@ public class AdminPage implements Initializable {
     public RadioButton user_isSuperUser;
     public Button logOutButton;
     public AnchorPane adminPagePane;
+    public Button addBookButton;
+    public Label editBookLabel;
+    public Button deleteBookButton;
+    public Button addUserButton;
+    public Label editUserLabel;
+    public Button deleteUserButton;
 
     ObservableList<AdminBook> adminBookObservableList = FXCollections.observableArrayList();
     ObservableList<AdminUser> adminUserObservableList = FXCollections.observableArrayList();
@@ -85,7 +92,8 @@ public class AdminPage implements Initializable {
                             book_name.setText(book.getBookName());
                             book_publishedOn.setText(book.getBookName());
                             book_quantity.setText(String.valueOf(book.getQuantity()));
-                            //System.out.println(book.getBookId());
+                            editBookLabel.setText("Edit Book");
+                            deleteBookButton.setVisible(true);
                             edit_bookPane.toFront();
 
                         });
@@ -117,7 +125,6 @@ public class AdminPage implements Initializable {
                         final Button editButton = new Button("Edit");
                         editButton.setOnAction(actionEvent -> {
                             AdminUser user = getTableView().getItems().get(getIndex());
-                            edit_user_pane.toFront();
                             user_name.setText(user.getUserName());
 
                             user_email.setText(user.getEmail());
@@ -128,6 +135,10 @@ public class AdminPage implements Initializable {
 
                             if(user.getSuperuser().equals("true")) user_isSuperUser.setSelected(true);
                             else user_isSuperUser.setSelected(false);
+
+                            deleteUserButton.setVisible(true);
+                            editUserLabel.setText("Edit User");
+                            edit_user_pane.toFront();
                         });
                         setGraphic(editButton);
                         setText(null);
@@ -140,6 +151,8 @@ public class AdminPage implements Initializable {
 
         populateUserlist();
         table_user.setItems(adminUserObservableList);
+
+        btnBooks.setSelected(true);
     }
 
     public void logOutButtonAction(ActionEvent actionEvent) throws IOException {
@@ -209,9 +222,14 @@ public class AdminPage implements Initializable {
         if(actionEvent.getSource() == btnBooks)
         {
             booksPane.toFront();
+            btnBooks.setSelected(true);
+            btnUsers.setSelected(false);
         }
-        else
+        else{
             userPane.toFront();
+            btnBooks.setSelected(false);
+            btnUsers.setSelected(true);
+        }
     }
 
     public void cancelBookBtnAction(ActionEvent actionEvent) {
@@ -231,21 +249,36 @@ public class AdminPage implements Initializable {
             Connection conn = DriverManager.getConnection("jdbc:sqlite:database/database.db");
             if(conn!= null)
             {
-                String query = String.format("UPDATE Book_Information\n" +
-                        "  SET name = '%s', author = '%s', published_on = '%s', quantity = %d\n" +
-                        "  WHERE ID = %d",bookName,author,publishedDate,quantity, selectedBookId);
+                String query;
+                if (selectedBookId == -1){
+                    query = String.format("insert into Book_Information (name, author, published_on, quantity)\n" +
+                            "values ('%s', '%s', '%s', %d);", bookName, author, publishedDate, quantity);
+                } else {
+                    query = String.format("UPDATE Book_Information\n" +
+                            "  SET name = '%s', author = '%s', published_on = '%s', quantity = %d\n" +
+                            "  WHERE ID = %d",bookName,author,publishedDate,quantity, selectedBookId);
+                }
+
                 Statement stmt = conn.createStatement();
                 stmt.execute(query);
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Success!");
-                alert.setContentText("Book information updated successfully..");
+
+                if (selectedBookId == -1) alert.setContentText("Book information inserted successfully..");
+                else alert.setContentText("Book information updated successfully..");
+
+                alert.setOnCloseRequest(evt -> {
+                    populateBooklist();
+                    booksPane.toFront();
+                    alert.close();
+                });
+
                 alert.showAndWait();
             }
             conn.close();
         }
         catch (SQLException throwables){
-            System.out.println(throwables);
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Error!");
             alert.setContentText("Database update error!");
@@ -258,22 +291,39 @@ public class AdminPage implements Initializable {
         String username = user_name.getText();
         String password = user_password.getText();
         boolean isSuper = user_isSuperUser.isSelected();
-        String query;
-        if(isSuper) query = String.format("UPDATE user_table SET username='%s', password='%s', isSuperUser='true' WHERE email='%s'", username, password, selectedUserEmail);
-        else query = String.format("UPDATE user_table SET username='%s', password='%s', isSuperUser='false' WHERE email='%s'", username, password, selectedUserEmail);
+        String email = user_email.getText();
+        String isSuperStr;
+        if (isSuper) isSuperStr = "true";
+        else isSuperStr = "false";
+
         try{
             Connection conn = DriverManager.getConnection("jdbc:sqlite:database/database.db");
-            if(conn!= null)
-            {
+
+            if (conn != null){
+                String query;
+                if (selectedUserEmail.equals("")) {
+                    query = String.format("insert into user_table (username, email, password, isSuperUser) values ('%s', '%s', '%s', '%s')", username, email, password, isSuperStr);
+                } else {
+                    query = String.format("UPDATE user_table SET username='%s', password='%s', isSuperUser='%s' WHERE email='%s'", username, password, isSuperStr, selectedUserEmail);
+                }
+
                 Statement stmt = conn.createStatement();
                 stmt.execute(query);
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Success!");
-                alert.setContentText("User information updated successfully..");
+
+                if (selectedUserEmail.equals("")) alert.setContentText("User added successfully..");
+                else alert.setContentText("User information updated successfully..");
+
+                alert.setOnCloseRequest(evt -> {
+                    populateUserlist();
+                    userPane.toFront();
+                    alert.close();
+                });
+
                 alert.showAndWait();
             }
-            conn.close();
         }
         catch (SQLException throwables){
             System.out.println(throwables);
@@ -289,5 +339,118 @@ public class AdminPage implements Initializable {
         populateUserlist();
         table_user.setItems(adminUserObservableList);
         userPane.toFront();
+    }
+
+    public void addBookButtonAction(ActionEvent actionEvent) {
+        selectedBookId = -1;
+        book_author.setText("");
+        book_name.setText("");
+        book_publishedOn.setText("");
+        book_quantity.setText(String.valueOf(1));
+        editBookLabel.setText("Add New Book");
+        deleteBookButton.setVisible(false);
+        edit_bookPane.toFront();
+    }
+
+    public void deleteBookButtonAction(ActionEvent actionEvent){
+        try{
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:database/database.db");
+            if(conn!= null)
+            {
+                if (selectedBookId != -1){
+                    // delete book
+                    String query;
+                    query = String.format("delete\n" +
+                            "from Book_Information\n" +
+                            "where ID=%d;",selectedBookId);
+
+                    Statement stmt = conn.createStatement();
+                    stmt.execute(query);
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Success!");
+                    alert.setContentText("Book deleted successfully.");
+
+                    alert.setOnCloseRequest(evt -> {
+                        populateBooklist();
+                        booksPane.toFront();
+                        alert.close();
+                    });
+
+                    alert.showAndWait();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error!");
+                    alert.setContentText("Invalid Book Id");
+                    alert.showAndWait();
+                }
+            }
+            conn.close();
+        }
+        catch (SQLException throwables){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Error!");
+            alert.setContentText("Database update error!");
+            alert.showAndWait();
+        }
+    }
+
+    public void addUserButtonAction(ActionEvent actionEvent){
+        user_name.setText("");
+        user_email.setText("");
+        user_email.setEditable(true);
+        user_password.setText("");
+        user_isSuperUser.setSelected(false);
+
+        selectedUserEmail = "";
+        deleteUserButton.setVisible(false);
+        editUserLabel.setText("Add New User");
+
+        edit_user_pane.toFront();
+    }
+
+    public void deleteUserButtonAction(ActionEvent actionEvent){
+        try{
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:database/database.db");
+            if(conn!= null)
+            {
+                if (selectedUserEmail.equals("")){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error!");
+                    alert.setContentText("Invalid Book Id");
+                    alert.showAndWait();
+
+                }
+                else{
+                    // delete book
+                    String query;
+                    query = String.format("delete\n" +
+                            "from user_table\n" +
+                            "where email='%s';",selectedUserEmail);
+
+                    Statement stmt = conn.createStatement();
+                    stmt.execute(query);
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Success!");
+                    alert.setContentText("User deleted successfully.");
+
+                    alert.setOnCloseRequest(evt -> {
+                        populateUserlist();
+                        userPane.toFront();
+                        alert.close();
+                    });
+
+                    alert.showAndWait();
+                }
+            }
+            conn.close();
+        }
+        catch (SQLException throwables){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Error!");
+            alert.setContentText("Database update error!");
+            alert.showAndWait();
+        }
     }
 }

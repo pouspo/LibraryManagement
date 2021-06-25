@@ -71,7 +71,7 @@ public class UserPage implements Initializable {
 
         table.setItems(objlist);
 
-        informationToggle.setSelected(true);
+        bookListToggle.setSelected(true);
     }
 
 
@@ -151,6 +151,9 @@ public class UserPage implements Initializable {
     }
     public void toggleButtonAction(ActionEvent actionEvent) {
         if (actionEvent.getSource() == bookListToggle){
+            populateBookListTable();
+            table.setItems(objlist);
+
             bookListPane.toFront();
             informationToggle.setSelected(false);
         }

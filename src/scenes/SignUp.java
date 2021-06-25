@@ -58,8 +58,7 @@ public class SignUp {
             try{
                 Statement stmt = conn.createStatement();
                 stmt.execute(sql);
-                System.out.println("Successfully created user");
-                errorText.setText("Successfully created user");
+                errorText.setText("Signup Successful. Please login..");
                 conn.close();
             } catch (SQLException e){
                 System.out.println(e.getMessage());

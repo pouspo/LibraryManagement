@@ -1,22 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<AnchorPane fx:id="userPagePane" onKeyReleased="#backSpaceButtonAction" prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #fff;" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="scenes.UserPage">
+
+<AnchorPane fx:id="userPagePane" onKeyReleased="#backSpaceButtonAction" prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #fff;" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="scenes.UserPage">
    <children>
       <BorderPane prefHeight="620.0" prefWidth="944.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <left>
             <Pane prefHeight="580.0" prefWidth="159.0" BorderPane.alignment="CENTER">
                <children>
-                  <VBox layoutY="20.0" maxHeight="1.7976931348623157E308" prefHeight="560.0" prefWidth="160.0">
+                  <VBox layoutY="20.0" maxHeight="1.7976931348623157E308" prefHeight="489.0" prefWidth="160.0">
                      <children>
                         <ToggleButton fx:id="informationToggle" focusTraversable="false" mnemonicParsing="false" onAction="#toggleButtonAction" prefHeight="0.0" prefWidth="162.0" text="Information" />
                         <ToggleButton fx:id="bookListToggle" focusTraversable="false" mnemonicParsing="false" onAction="#toggleButtonAction" prefHeight="31.0" prefWidth="159.0" text="Booklist" />
-                        <Button fx:id="logOutButton" mnemonicParsing="false" onAction="#logOutButtonAction" prefHeight="21.0" prefWidth="162.0" text="Log Out" />
                      </children>
                   </VBox>
+                  <Button fx:id="logOutButton" layoutX="3.0" layoutY="549.0" mnemonicParsing="false" onAction="#logOutButtonAction" prefHeight="21.0" prefWidth="150.0" styleClass="logoutButton" text="Log Out" />
                </children>
             </Pane>
          </left>
@@ -48,9 +58,9 @@
                         </Pane>
                         <Pane fx:id="informationPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #fff;">
                            <children>
-                              <Label layoutX="301.0" layoutY="31.0" text="Information">
+                              <Label layoutX="245.0" layoutY="36.0" text="Book Borrowing History">
                                  <font>
-                                    <Font size="31.0" />
+                                    <Font size="22.0" />
                                  </font>
                               </Label>
                               <TableView fx:id="infoTable" layoutX="38.0" layoutY="141.0" prefHeight="250.0" prefWidth="697.0">

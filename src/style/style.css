@@ -5,6 +5,17 @@
 .button:pressed {
     -fx-background-color: cadetblue;
 }
+
+.deleteButton {
+    -fx-background-color: #e72424;
+    -fx-text-fill: ghostwhite;
+}
+
+.logoutButton {
+    -fx-background-color: #843d3d;
+    -fx-text-fill: ghostwhite;
+}
+
 .toggle-button {
     -fx-border-color: white;
     -fx-font-size: 15px;
