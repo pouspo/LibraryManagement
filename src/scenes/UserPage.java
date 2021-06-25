@@ -165,7 +165,7 @@ public class UserPage implements Initializable {
 
     public void logOutButtonAction(ActionEvent actionEvent) throws IOException {
         Stage stage = (Stage) userPagePane.getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample/sample.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/main.fxml"));
         Parent root =  loader.load();
         //primaryStage.setTitle();
         stage.setScene(new Scene(root));

@@ -81,7 +81,7 @@ public class Controller implements Initializable {
 
                     if(cnt == 1){
                         Stage stage = (Stage) Pane1.getScene().getWindow();
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Scene1/UserPage.fxml"));
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/UserPage.fxml"));
                         Parent root =  loader.load();
                         UserPage userPage =  loader.getController();
                         userPage.setEmail(email);
