@@ -171,6 +171,7 @@ public class AdminPage implements Initializable {
                 String query = "Select * from Book_Information";
                 Statement stmt = conn.createStatement();
                 ResultSet res = stmt.executeQuery(query);
+                adminBookObservableList.clear();
                 while(res.next()){
                     adminBookObservableList.add(new AdminBook(
                             res.getInt("ID"),
@@ -198,6 +199,7 @@ public class AdminPage implements Initializable {
                 String query = "Select * from user_table";
                 Statement stmt = conn.createStatement();
                 ResultSet res = stmt.executeQuery(query);
+                adminUserObservableList.clear();
                 while(res.next()){
                     adminUserObservableList.add(new AdminUser(
                             res.getString("username"),
