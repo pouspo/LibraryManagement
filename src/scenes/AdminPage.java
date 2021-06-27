@@ -90,7 +90,7 @@ public class AdminPage implements Initializable {
                             selectedBookId = book.getBookId();
                             book_author.setText(book.getAuthor());
                             book_name.setText(book.getBookName());
-                            book_publishedOn.setText(book.getBookName());
+                            book_publishedOn.setText(book.getPublishedDate());
                             book_quantity.setText(String.valueOf(book.getQuantity()));
                             editBookLabel.setText("Edit Book");
                             deleteBookButton.setVisible(true);
